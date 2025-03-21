@@ -27,7 +27,9 @@
         import { OBJLoader } from 'OBJLoader';
 
         const peer = new Peer('TorrlabSpecialVrExploererId');
+        console.log(peer)
         peer.on('connection', (conn) => {
+            console.log(conn)
             conn.on('data', handleCommand);
         });
 
