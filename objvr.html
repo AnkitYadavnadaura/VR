@@ -34,6 +34,7 @@
         });
 
         let scene, camera, renderer, object;
+        let cameraGroup;
 
         function init() {
             scene = new THREE.Scene();
@@ -50,6 +51,14 @@
 
             camera.position.set(-10,0,50)
             scene.add(light);
+            // Create a group to hold the camera for movement
+            if (!camera || !(camera instanceof THREE.Camera)) {
+                console.error("Camera is not properly initialized!");
+            } else {
+                cameraGroup = new THREE.Group();
+                cameraGroup.add(camera);  // ✅ Add camera to group safely
+                scene.add(cameraGroup);   // ✅ Add cameraGroup to scene
+            }
 
             loadOBJ();
             renderer.setAnimationLoop(animate);
@@ -70,14 +79,7 @@
             );
         }
 
-       // Create a group to hold the camera for movement
-if (!camera || !(camera instanceof THREE.Camera)) {
-    console.error("Camera is not properly initialized!");
-} else {
-    let cameraGroup = new THREE.Group();
-    cameraGroup.add(camera);  // ✅ Add camera to group safely
-    scene.add(cameraGroup);   // ✅ Add cameraGroup to scene
-}
+
 
 // Apply movement to cameraGroup instead of camera in VR mode
 function handleCommand(command) {
