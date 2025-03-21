@@ -1,1 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VR Controller</title>
+    <script src="https://cdn.jsdelivr.net/npm/peerjs@1.3.2/dist/peerjs.min.js"></script>
+    <style>
+        body { display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background: #222; color: white; font-family: Arial, sans-serif; }
+        .controller { display: grid; grid-template-columns: repeat(3, 80px); gap: 10px; text-align: center; }
+        button { width: 80px; height: 80px; font-size: 20px; background: #444; color: white; border: none; border-radius: 10px; cursor: pointer; }
+        button:active { background: #666; }
+        .big-button { grid-column: span 3; }
+    </style>
+</head>
+<body>
+    <div class="controller">
+        <button onclick="sendCommand('moveForward')">⬆</button>
+        <button onclick="sendCommand('moveLeft')">⬅</button>
+        <button onclick="sendCommand('moveRight')">➡</button>
+        <button onclick="sendCommand('moveBackward')">⬇</button>
+        <button class="big-button" onclick="sendCommand('grab')">Grab</button>
+        <button class="big-button" onclick="sendCommand('leave')">Leave</button>
+    </div>
+
+    <script>
+        const peer = new Peer();
+        let conn;
+
+        peer.on('open', (id) => {
+            conn = peer.connect('TorrlabSpecialVrExploererId');
+            conn.on('open', () => console.log('Connected to Explorer'));
+        });
+
+        function sendCommand(command) {
+            if (conn && conn.open) {
+                conn.send(command);
+            }
+        }
+    </script>
+</body>
+</html>
 
