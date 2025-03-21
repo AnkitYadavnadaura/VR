@@ -70,15 +70,32 @@
             );
         }
 
-        function handleCommand(command) {
-            console.log(command);
-            if (command === 'moveForward') camera.position.z -= 0.1;
-            else if (command === 'moveBackward') camera.position.z += 0.1;
-            else if (command === 'moveLeft') camera.position.x -= 0.1;
-            else if (command === 'moveRight') camera.position.x += 0.1;
-            else if (command === 'grab' && object) object.position.set(camera.position.x, camera.position.y, camera.position.z - 1);
-            else if (command === 'leave' && object) object.position.set(0, 1, -2);
-        }
+        let cameraGroup = new THREE.Group();
+cameraGroup.add(camera);
+scene.add(cameraGroup);
+
+function handleCommand(command) {
+    if (renderer.xr.isPresenting) {
+        if (command === 'moveForward') cameraGroup.position.z -= 0.1;
+        else if (command === 'moveBackward') cameraGroup.position.z += 0.1;
+        else if (command === 'moveLeft') cameraGroup.position.x -= 0.1;
+        else if (command === 'moveRight') cameraGroup.position.x += 0.1;
+        else if (command === 'moveUp') cameraGroup.position.y += 0.1;
+        else if (command === 'moveDown') cameraGroup.position.y -= 0.1;
+        else if (command === 'rotateLeft') cameraGroup.rotation.y += 0.1;
+        else if (command === 'rotateRight') cameraGroup.rotation.y -= 0.1;
+    } else {
+        if (command === 'moveForward') camera.position.z -= 0.1;
+        else if (command === 'moveBackward') camera.position.z += 0.1;
+        else if (command === 'moveLeft') camera.position.x -= 0.1;
+        else if (command === 'moveRight') camera.position.x += 0.1;
+        else if (command === 'moveUp') camera.position.y += 0.1;
+        else if (command === 'moveDown') camera.position.y -= 0.1;
+        else if (command === 'rotateLeft') camera.rotation.y += 0.1;
+        else if (command === 'rotateRight') camera.rotation.y -= 0.1;
+    }
+}
+
 
         function animate() {
             renderer.render(scene, camera);
