@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manual Bone Control</title>
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://cdn.jsdelivr.net/npm/three@0.156.1/build/three.module.min.js",
+                "FBXLoader": "https://cdn.jsdelivr.net/npm/three@0.156.1/examples/jsm/loaders/FBXLoader.js",
+                "OrbitControls": "https://cdn.jsdelivr.net/npm/three@0.156.1/examples/jsm/controls/OrbitControls.js",
+                "dat.gui": "https://cdn.jsdelivr.net/npm/dat.gui@0.7.9/build/dat.gui.module.js"
+            }
+        }
+    </script>
+    <style>
+        body { margin: 0; overflow: hidden; background: #202020; }
+        canvas { display: block; }
+    </style>
+</head>
+<body>
+    <script type="module">
+        import * as THREE from 'three';
+        import { FBXLoader } from 'FBXLoader';
+        import { OrbitControls } from 'OrbitControls';
+        import { GUI } from 'dat.gui';
+
+        // Scene setup
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        // Orbit Controls
+        const controls = new OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+
+        // Lighting
+        const ambientLight = new THREE.AmbientLight(0xffffff, 1.5);
+        scene.add(ambientLight);
+
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 2);
+        directionalLight.position.set(5, 5, 5);
+        scene.add(directionalLight);
+
+        // Camera Position
+        camera.position.set(0, 1, 3);
+        scene.background = new THREE.Color(0xffffff);
+
+        // Variables
+        let handModel;
+        let bones = {};
+        let skeleton;
+
+        // Load FBX Model
+        const loader = new FBXLoader();
+        loader.load('Hand/Rigged_Hand.fbx', (fbx) => {
+            handModel = fbx;
+            handModel.scale.set(1, 1, 1);
+            handModel.position.set(0, -1, 0);
+            handModel.rotation.y = Math.PI;
+            scene.add(handModel);
+
+            // Extract bones
+            handModel.traverse((child) => {
+                if (child.isBone) {
+                    bones[child.name] = child;
+                    console.log("Bone found:", child.name);
+                }
+            });
+
+            // Bind skeleton
+            handModel.traverse((child) => {
+                if (child.isSkinnedMesh) {
+                    console.log("SkinnedMesh found:", child.name);
+                    skeleton = child.skeleton;
+                    child.bind(skeleton, child.matrixWorld);
+                }
+            });
+
+            console.log("Loaded Bones:", Object.keys(bones));
+
+            // Setup GUI
+            setupGUI();
+        });
+
+        // GUI for Manual Bone Control
+        function setupGUI() {
+            const gui = new GUI();
+
+            if (!bones["finger_index01L"] || !bones["finger_middle01L"]) {
+                console.warn("Finger bones not found! Check FBX structure.");
+                return;
+            }
+
+            const fingerControls = {
+                indexFingerX: 0,
+                middleFingerX: 0
+            };
+
+            gui.add(fingerControls, 'indexFingerX', -Math.PI / 2, Math.PI / 2).name('Index Finger X').onChange((value) => {
+                bones["finger_index01L"].rotation.x = value;
+                updateSkeleton();
+            });
+
+            gui.add(fingerControls, 'middleFingerX', -Math.PI / 2, Math.PI / 2).name('Middle Finger X').onChange((value) => {
+                bones["finger_middle01L"].rotation.x = value;
+                updateSkeleton();
+            });
+
+            console.log("GUI Setup Completed.");
+        }
+
+        // Function to Update Skeleton
+        function updateSkeleton() {
+            if (skeleton) {
+                skeleton.pose(); // Ensure the skeleton updates
+            }
+        }
+
+        // Animation loop
+        function animate() {
+            requestAnimationFrame(animate);
+            controls.update();
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // Handle window resizing
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+    </script>
+</body>
+</html>
