@@ -83,7 +83,7 @@
 
 // Apply movement to cameraGroup instead of camera in VR mode
 function handleCommand(command) {
-    const moveSpeed = 0.1;
+    const moveSpeed = 1;
     const rotateSpeed = 0.1;
 
     if (renderer.xr.isPresenting) {
@@ -141,6 +141,7 @@ function handleCommand(command) {
                 camera.rotation.y -= rotateSpeed;
                 break;
         }
+        camera.updateMatrixWorld(true);
     }
 }
 
