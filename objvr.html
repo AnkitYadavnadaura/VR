@@ -72,6 +72,34 @@
                     object = loadedObject;
                     object.scale.set(1, 1, 1);
                     object.position.set(0, 1, -2);
+                    const colorPalette = [0xff5733, 0x33ff57, 0x3357ff, 0xff33a8, 0xffd700, 0x00ffff];
+
+object.traverse((child) => {
+    if (child.isMesh) {
+        const randomColor = colorPalette[Math.floor(Math.random() * colorPalette.length)];
+        
+        child.material = new THREE.MeshStandardMaterial({
+            color: randomColor, 
+            emissive: Math.random() > 0.5 ? randomColor : 0x000000, // Some parts glow
+            metalness: Math.random(), 
+            roughness: Math.random(),
+            wireframe: Math.random() > 0.8 // Random wireframe effect
+        });
+
+        // Apply vertex colors for gradient effects
+        child.geometry.computeVertexNormals();
+        const position = child.geometry.attributes.position;
+        const colors = [];
+
+        for (let i = 0; i < position.count; i++) {
+            colors.push(Math.random(), Math.random(), Math.random());
+        }
+
+        child.geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+        child.material.vertexColors = true;
+    }
+});
+
                     scene.add(object);
                 },
                 (xhr) => console.log((xhr.loaded / xhr.total) * 100 + '% loaded'),
