@@ -70,29 +70,71 @@
             );
         }
 
-        let cameraGroup = new THREE.Group();
+       // Create a group to hold the camera for movement
+let cameraGroup = new THREE.Group();
 cameraGroup.add(camera);
 scene.add(cameraGroup);
 
+// Apply movement to cameraGroup instead of camera in VR mode
 function handleCommand(command) {
+    const moveSpeed = 0.1;
+    const rotateSpeed = 0.1;
+
     if (renderer.xr.isPresenting) {
-        if (command === 'moveForward') cameraGroup.position.z -= 0.1;
-        else if (command === 'moveBackward') cameraGroup.position.z += 0.1;
-        else if (command === 'moveLeft') cameraGroup.position.x -= 0.1;
-        else if (command === 'moveRight') cameraGroup.position.x += 0.1;
-        else if (command === 'moveUp') cameraGroup.position.y += 0.1;
-        else if (command === 'moveDown') cameraGroup.position.y -= 0.1;
-        else if (command === 'rotateLeft') cameraGroup.rotation.y += 0.1;
-        else if (command === 'rotateRight') cameraGroup.rotation.y -= 0.1;
+        switch (command) {
+            case 'moveForward':
+                cameraGroup.position.add(camera.getWorldDirection(new THREE.Vector3()).multiplyScalar(moveSpeed));
+                break;
+            case 'moveBackward':
+                cameraGroup.position.add(camera.getWorldDirection(new THREE.Vector3()).multiplyScalar(-moveSpeed));
+                break;
+            case 'moveLeft':
+                cameraGroup.position.x -= moveSpeed;
+                break;
+            case 'moveRight':
+                cameraGroup.position.x += moveSpeed;
+                break;
+            case 'moveUp':
+                cameraGroup.position.y += moveSpeed;
+                break;
+            case 'moveDown':
+                cameraGroup.position.y -= moveSpeed;
+                break;
+            case 'rotateLeft':
+                cameraGroup.rotation.y += rotateSpeed;
+                break;
+            case 'rotateRight':
+                cameraGroup.rotation.y -= rotateSpeed;
+                break;
+        }
     } else {
-        if (command === 'moveForward') camera.position.z -= 0.1;
-        else if (command === 'moveBackward') camera.position.z += 0.1;
-        else if (command === 'moveLeft') camera.position.x -= 0.1;
-        else if (command === 'moveRight') camera.position.x += 0.1;
-        else if (command === 'moveUp') camera.position.y += 0.1;
-        else if (command === 'moveDown') camera.position.y -= 0.1;
-        else if (command === 'rotateLeft') camera.rotation.y += 0.1;
-        else if (command === 'rotateRight') camera.rotation.y -= 0.1;
+        // Non-VR movement (same logic but applied to the camera)
+        switch (command) {
+            case 'moveForward':
+                camera.position.add(camera.getWorldDirection(new THREE.Vector3()).multiplyScalar(moveSpeed));
+                break;
+            case 'moveBackward':
+                camera.position.add(camera.getWorldDirection(new THREE.Vector3()).multiplyScalar(-moveSpeed));
+                break;
+            case 'moveLeft':
+                camera.position.x -= moveSpeed;
+                break;
+            case 'moveRight':
+                camera.position.x += moveSpeed;
+                break;
+            case 'moveUp':
+                camera.position.y += moveSpeed;
+                break;
+            case 'moveDown':
+                camera.position.y -= moveSpeed;
+                break;
+            case 'rotateLeft':
+                camera.rotation.y += rotateSpeed;
+                break;
+            case 'rotateRight':
+                camera.rotation.y -= rotateSpeed;
+                break;
+        }
     }
 }
 
