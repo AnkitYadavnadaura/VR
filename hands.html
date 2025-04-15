@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Hand Tracking with PeerJS</title>
+  <style>
+    video { transform: scaleX(-1); width: 480px; }
+    canvas { position: absolute; left: 0; top: 0; }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/peerjs@1.4.7/dist/peerjs.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.min.js"></script>
+</head>
+<body>
+  <h2>Your ID: <span id="my-id">...</span></h2>
+  <input type="text" id="connect-id" placeholder="Remote ID" />
+  <button onclick="connect()">Connect</button><br><br>
+
+  <video class="input_video" autoplay muted playsinline></video>
+  <canvas class="output_canvas" width="640" height="480"></canvas>
+
+  <script>
+    const video = document.querySelector(".input_video");
+    const canvas = document.querySelector(".output_canvas");
+    const ctx = canvas.getContext("2d");
+
+    const peer = new Peer();
+    let conn;
+
+    peer.on("open", id => {
+      document.getElementById("my-id").innerText = id;
+    });
+
+    peer.on("connection", c => {
+      conn = c;
+      conn.on("data", data => {
+        console.log("Received hand data:", data);
+      });
+    });
+
+    function connect() {
+      const id = document.getElementById("connect-id").value;
+      conn = peer.connect("TORRLABSPECIALSERVERHANDTRACKED");
+      conn.on("open", () => console.log("Connected to", id));
+    }
+
+    const hands = new Hands({
+      locateFile: file => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`
+    });
+
+    hands.setOptions({
+      maxNumHands: 1,
+      modelComplexity: 1,
+      minDetectionConfidence: 0.7,
+      minTrackingConfidence: 0.7
+    });
+
+    hands.onResults(results => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      if (results.multiHandLandmarks.length > 0) {
+        for (const landmarks of results.multiHandLandmarks) {
+          drawConnectors(ctx, landmarks, HAND_CONNECTIONS, { color: "#00FF00", lineWidth: 2 });
+          drawLandmarks(ctx, landmarks, { color: "#FF0000", lineWidth: 1 });
+
+          const handData = landmarks.map(pt => ({ x: pt.x, y: pt.y, z: pt.z }));
+          if (conn && conn.open) conn.send(handData);
+        }
+      }
+    });
+
+    const camera = new Camera(video, {
+      onFrame: async () => {
+        await hands.send({ image: video });
+      },
+      width: 640,
+      height: 480
+    });
+
+    camera.start();
+  </script>
+</body>
+</html>
