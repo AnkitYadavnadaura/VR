@@ -8,7 +8,7 @@
         {
             "imports": {
                 "three": "https://cdn.jsdelivr.net/npm/three@0.156.1/build/three.module.min.js",
-                "FBXLoader": "https://cdn.jsdelivr.net/npm/three@0.156.1/examples/jsm/loaders/FBXLoader.js",
+                "FBXLoader": "https://cdn.jsdelivr.net/npm/three@0.156.1/examples/jsm/loaders/GLTFLoader.js",
                 "OrbitControls": "https://cdn.jsdelivr.net/npm/three@0.156.1/examples/jsm/controls/OrbitControls.js",
                 "dat.gui": "https://cdn.jsdelivr.net/npm/dat.gui@0.7.9/build/dat.gui.module.js"
             }
@@ -22,7 +22,7 @@
 <body>
     <script type="module">
         import * as THREE from 'three';
-        import { FBXLoader } from 'FBXLoader';
+        import { GLTFLoader } from 'FBXLoader';
         import { OrbitControls } from 'OrbitControls';
         import { GUI } from 'dat.gui';
 
@@ -53,11 +53,18 @@
         let handModel;
         let bones = {};
         let skeleton;
+        const fingerBones = {
+    index: [],
+    middle: [],
+    ring: [],
+    pinky: [],
+    thumb: []
+};
 
         // Load FBX Model
-        const loader = new FBXLoader();
-        loader.load('Hand/Rigged_Hand.fbx', (fbx) => {
-            handModel = fbx;
+        const loader = new GLTFLoader();
+        loader.load('rigged_Hand/scene.gltf', (fbx) => {
+            handModel = fbx.scene;
             handModel.scale.set(1, 1, 1);
             handModel.position.set(0, -1, 0);
             handModel.rotation.y = Math.PI;
@@ -65,54 +72,44 @@
 
             // Extract bones
             handModel.traverse((child) => {
-                if (child.isBone) {
-                    bones[child.name] = child;
-                    console.log("Bone found:", child.name);
-                }
-            });
-
-            // Bind skeleton
-            handModel.traverse((child) => {
-                if (child.isSkinnedMesh) {
-                    console.log("SkinnedMesh found:", child.name);
-                    skeleton = child.skeleton;
-                    child.bind(skeleton, child.matrixWorld);
-                }
-            });
+    if (child.isBone) {
+        const name = child.name.toLowerCase();
+        
+        if (name.includes("index")) fingerBones.index.push(child);
+        else if (name.includes("middle")) fingerBones.middle.push(child);
+        else if (name.includes("ring")) fingerBones.ring.push(child);
+        else if (name.includes("pinky") || name.includes("little")) fingerBones.pinky.push(child);
+        else if (name.includes("thumb")) fingerBones.thumb.push(child);
+    }
+});
 
             console.log("Loaded Bones:", Object.keys(bones));
 
             // Setup GUI
-            setupGUI();
+            setTimeout(setupGUI(),1000);
         });
 
         // GUI for Manual Bone Control
         function setupGUI() {
-            const gui = new GUI();
+    const gui = new GUI();
+    const controls = {
+        index: 0,
+        middle: 0,
+        ring: 0,
+        pinky: 0,
+        thumb: 0
+    };
 
-            if (!bones["finger_index01L"] || !bones["finger_middle01L"]) {
-                console.warn("Finger bones not found! Check FBX structure.");
-                return;
-            }
-
-            const fingerControls = {
-                indexFingerX: 0,
-                middleFingerX: 0
-            };
-
-            gui.add(fingerControls, 'indexFingerX', -Math.PI / 2, Math.PI / 2).name('Index Finger X').onChange((value) => {
-                bones["finger_index01L"].rotation.x = value;
-                updateSkeleton();
+    Object.keys(controls).forEach(finger => {
+        gui.add(controls, finger, -Math.PI / 2, Math.PI / 2).name(`${finger} curl`).onChange((value) => {
+            fingerBones[finger].forEach(bone => {
+                bone.rotation.z = value;
             });
+        });
+    });
 
-            gui.add(fingerControls, 'middleFingerX', -Math.PI / 2, Math.PI / 2).name('Middle Finger X').onChange((value) => {
-                bones["finger_middle01L"].rotation.x = value;
-                updateSkeleton();
-            });
-
-            console.log("GUI Setup Completed.");
-        }
-
+    console.log("Finger animation controls ready.");
+}
         // Function to Update Skeleton
         function updateSkeleton() {
             if (skeleton) {
