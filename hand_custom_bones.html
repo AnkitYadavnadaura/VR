@@ -149,18 +149,21 @@ mypeer.on('connection', conn => {
        bone.rotation.x = data[term].x;
        bone.rotation.y = data[term].y;
        bone.rotation.z = data[term].z
+       console.log(term)
        term++
 })
    fingerBones['index'].forEach(bone=>{
        bone.rotation.x = data[term].x;
        bone.rotation.y = data[term].y;
        bone.rotation.z = data[term].z
+       console.log(term)
        term++
 })
    fingerBones['middle'].forEach(bone=>{
        bone.rotation.x = data[term].x;
        bone.rotation.y = data[term].y;
        bone.rotation.z = data[term].z
+       console.log(term)
        term++
 })
 
@@ -168,12 +171,14 @@ mypeer.on('connection', conn => {
        bone.rotation.x = data[term].x;
        bone.rotation.y = data[term].y;
        bone.rotation.z = data[term].z
+        console.log(term)
        term++
 })
     fingerBones['pinky'].forEach(bone=>{
        bone.rotation.x = data[term].x;
        bone.rotation.y = data[term].y;
        bone.rotation.z = data[term].z
+        console.log(term)
        term++
 })
     // Example: do something with the data
