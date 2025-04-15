@@ -72,6 +72,13 @@
 
     peer.on("open", id => {
       document.getElementById("my-id").innerText = id;
+       if (peer.id !== "TORRLABSPECIALSERVERHANDTRACKED") {
+        conn = peer.connect("TORRLABSPECIALSERVERHANDTRACKED");
+document.getElementById("my-id").innerText = "TORRLABSPECIALSERVERHANDTRACKED";
+        conn.on("open", () => {
+          console.log("Connected to TORRLABSPECIALSERVERHANDTRACKED");
+        });
+      }
     });
 
     peer.on("connection", c => {
@@ -83,14 +90,7 @@
     });
 
     // Auto-connect to the server peer ID
-    window.addEventListener("load", () => {
-      if (peer.id !== "TORRLABSPECIALSERVERHANDTRACKED") {
-        conn = peer.connect("TORRLABSPECIALSERVERHANDTRACKED");
-        conn.on("open", () => {
-          console.log("Connected to TORRLABSPECIALSERVERHANDTRACKED");
-        });
-      }
-    });
+   
 
     const hands = new Hands({
       locateFile: file => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`
