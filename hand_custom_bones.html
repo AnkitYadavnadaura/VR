@@ -131,6 +131,22 @@
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
         });
+//controller
+const mypeer = new Peer("TORRLABSPECIALSERVERHANDTRACKED");
+
+mypeer.on('open', id => {
+  console.log("Connected with ID:", id);
+});
+mypeer.on('connection', conn => {
+  console.log("Connected by peer:", conn.peer);
+
+  conn.on('data', data => {
+    console.log("Received hand data:", data);
+    
+    // Example: do something with the data
+    // visualizeHandData(data);
+  });
+});
 
     </script>
 </body>
