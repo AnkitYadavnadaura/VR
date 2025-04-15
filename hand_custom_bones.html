@@ -138,12 +138,44 @@ const mypeer = new Peer("TORRLABSPECIALSERVERHANDTRACKED");
 mypeer.on('open', id => {
   console.log("Connected with ID:", id);
 });
+     
 mypeer.on('connection', conn => {
   console.log("Connected by peer:", conn.peer);
 
   conn.on('data', data => {
     console.log("Received hand data:", data);
-    
+      term = 1
+   fingerBones['thumb'].forEach(bone=>{
+       bone.rotation.x = data[term].x;
+       bone.rotation.y = data[term].y;
+       bone.rotation.z = data[term].z
+       term++
+})
+   fingerBones['index'].forEach(bone=>{
+       bone.rotation.x = data[term].x;
+       bone.rotation.y = data[term].y;
+       bone.rotation.z = data[term].z
+       term++
+})
+   fingerBones['middle'].forEach(bone=>{
+       bone.rotation.x = data[term].x;
+       bone.rotation.y = data[term].y;
+       bone.rotation.z = data[term].z
+       term++
+})
+
+    fingerBones['ring'].forEach(bone=>{
+       bone.rotation.x = data[term].x;
+       bone.rotation.y = data[term].y;
+       bone.rotation.z = data[term].z
+       term++
+})
+    fingerBones['pinky'].forEach(bone=>{
+       bone.rotation.x = data[term].x;
+       bone.rotation.y = data[term].y;
+       bone.rotation.z = data[term].z
+       term++
+})
     // Example: do something with the data
     // visualizeHandData(data);
   });
