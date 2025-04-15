@@ -63,7 +63,7 @@
 
         // Load FBX Model
         const loader = new GLTFLoader();
-        loader.load('rigged_Hand/scene.gltf', (fbx) => {
+        loader.load('scene.gltf', (fbx) => {
             handModel = fbx.scene;
             handModel.scale.set(1, 1, 1);
             handModel.position.set(0, -1, 0);
