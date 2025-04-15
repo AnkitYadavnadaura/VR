@@ -144,7 +144,7 @@ mypeer.on('connection', conn => {
 
   conn.on('data', data => {
     console.log("Received hand data:", data);
-      term = 1
+    var term = 1
    fingerBones['thumb'].forEach(bone=>{
        bone.rotation.x = data[term].x;
        bone.rotation.y = data[term].y;
