@@ -144,18 +144,18 @@ let term = 1;
 let term2 = 0;
 for(const finge in fingerBones){
 let finger = fingerBones[finge]
-finger[0].position.x = data[term].x
-finger[0].position.y = data[term].y
-finger[0].position.z = data[term].z
-finger[4].position.x = data[term+1].x
-finger[4].position.y = data[term+1].y
-finger[4].position.z = data[term+1].z
-finger[8].position.x = data[term+2].x
-finger[8].position.y = data[term+2].y
-finger[8].position.z = data[term+2].z
-finger[12].position.x = data[term+3].x
-finger[12].position.y = data[term+3].y
-finger[12].position.z = data[term+3].z
+angle = getEulerAngles(data[term], data[term+1])
+angle1 = getEulerAngles(data[term+1], data[term+2])
+angle2 = getEulerAngles(data[term+2], data[term+3])
+finger[0].rotation.x = angle.x
+finger[0].rotation.y = angle.y
+finger[0].rotation.z = angle.z
+finger[4].rotation.x = angle1.x
+finger[4].rotation.y = angle1.y
+finger[4].rotation.z = angle1.z
+finger[8].rotation.x = angle2.x
+finger[8].rotation.y = angle2.y
+finger[8].rotation.z = angle2.z
 term += 4;
 }
     
@@ -172,6 +172,33 @@ animeit(data)
     // visualizeHandData(data);
   });
 });
+
+
+// calculating 3d angles
+
+function getEulerAngles(a, b) {
+  // Direction vector from a to b
+  const dx = b.x - a.x;
+  const dy = b.y - a.y;
+  const dz = b.z - a.z;
+
+  // Normalize direction vector
+  const length = Math.sqrt(dx * dx + dy * dy + dz * dz);
+  const x = dx / length;
+  const y = dy / length;
+  const z = dz / length;
+
+  // Rotation around each axis
+  const pitch = Math.atan2(-y, Math.sqrt(x * x + z * z)); // X-axis (up/down)
+  const yaw   = Math.atan2(x, -z);                        // Y-axis (left/right)
+  const roll  = Math.atan2(y, x);                         // Z-axis (twist)
+
+  return {
+    x: pitch * (180 / Math.PI),
+    y: yaw   * (180 / Math.PI),
+    z: roll  * (180 / Math.PI)
+  };
+}
 
     </script>
 </body>
