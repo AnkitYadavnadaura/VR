@@ -144,9 +144,9 @@ let term = 1;
 let term2 = 0;
 for(const finge in fingerBones){
 let finger = fingerBones[finge]
-angle = getEulerAngles(data[term], data[term+1])
-angle1 = getEulerAngles(data[term+1], data[term+2])
-angle2 = getEulerAngles(data[term+2], data[term+3])
+let angle = getEulerAngles(data[term], data[term+1])
+let angle1 = getEulerAngles(data[term+1], data[term+2])
+let angle2 = getEulerAngles(data[term+2], data[term+3])
 //finger[0].rotation.x = angle.x
 //finger[0].rotation.y = angle.y
 finger[0].rotation.z = angle.z
