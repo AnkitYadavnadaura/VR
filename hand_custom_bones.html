@@ -156,7 +156,8 @@ mypeer.on('connection', conn => {
        bone.rotation.x = data[term].x;
        bone.rotation.y = data[term].y;
        bone.rotation.z = data[term].z
-       console.log(term)
+       console.log(data[term])
+       console.log(data[term][x])
        term++
 })
    fingerBones['middle'].forEach(bone=>{
