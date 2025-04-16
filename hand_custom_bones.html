@@ -149,13 +149,16 @@ let angle1 = angleAtB(data[term], data[term+1], data[term+2])
 let angle2 = angleAtB(data[term+1], data[term+2], data[term+3])
 //finger[0].rotation.x = angle.x
 //finger[0].rotation.y = angle.y
-finger[0].rotation.z = angle
+finger.forEach(bone => {
+                bone.rotation.z = angle;
+                console.log(bone)
+    });
 //finger[4].rotation.x = angle1.x
 //finger[4].rotation.y = angle1.y
-finger[4].rotation.z = angle1
+//finger[4].rotation.z = angle1
 //finger[8].rotation.x = angle2.x
 //finger[8].rotation.y = angle2.y
-finger[8].rotation.z = angle2
+//finger[8].rotation.z = angle2
 term += 4;
 }
     
