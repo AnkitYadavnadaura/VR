@@ -150,7 +150,7 @@ let angle2 = angleAtB(data[term+1], data[term+2], data[term+3])
 //finger[0].rotation.x = angle.x
 //finger[0].rotation.y = angle.y
 finger.forEach(bone => {
-                bone.rotation.z = angle;
+                bone.rotation.z = normalize(angle, 90, 180);
                 console.log(bone)
     });
 //finger[4].rotation.x = angle1.x
@@ -178,24 +178,12 @@ animeit(data)
 
 
 // calculating 3d angles
-function normalize(a,b,c){
-if(a<0){
-a = -a
-b = b+a
-c = c+a
+function normalize(value, min, max) {
+  return (value - min) / (max - min);
 }
-if(b<0){
-b = -b
-a = b+a
-c = c+b
-}
-if(c<0){
-c = -c
-b = b+c
-a = a+c
-}
-return [a,b,c]
-}
+
+// Example: normalize 75 from range 50–100
+
 function angleAtB(a, b, c) {
   // Create vectors BA and BC
   const ba = {
