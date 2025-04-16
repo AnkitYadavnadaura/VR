@@ -105,6 +105,7 @@
         gui.add(controls, finger, -Math.PI / 2, Math.PI / 2).name(`${finger} curl`).onChange((value) => {
             fingerBones[finger].forEach(bone => {
                 bone.rotation.z = value;
+                console.log(one)
             });
         });
     });
@@ -138,88 +139,14 @@ const mypeer = new Peer("TORRLABSPECIALSERVERHANDTRACKED");
 mypeer.on('open', id => {
   console.log("Connected with ID:", id);
 });
-// How many bones per MediaPipe segment to match your 13 total per finger
-const boneMapping = {
-    thumb: [
-        [1, 2, 4],
-        [2, 3, 4],
-        [3, 4, 5]
-    ],
-    index: [
-        [5, 6, 4],
-        [6, 7, 4],
-        [7, 8, 5]
-    ],
-    middle: [
-        [9, 10, 4],
-        [10, 11, 4],
-        [11, 12, 5]
-    ],
-    ring: [
-        [13, 14, 4],
-        [14, 15, 4],
-        [15, 16, 5]
-    ],
-    pinky: [
-        [17, 18, 4],
-        [18, 19, 4],
-        [19, 20, 5]
-    ]
-};
 
-// Helper function: interpolate between two 3D points
-function interpolateVector(start, end, t) {
-    return {
-        x: start.x + (end.x - start.x) * t,
-        y: start.y + (end.y - start.y) * t,
-        z: start.z + (end.z - start.z) * t
-    };
-}
-
-// Call this function every time you get new hand data from MediaPipe
-function updateHandBones(data) {
-    if (!data || data.length !== 21) {
-        console.warn("Invalid MediaPipe hand data");
-        return;
-    }
-
-    for (const finger in boneMapping) {
-        const mapping = boneMapping[finger];
-        const bones = fingerBones[finger];
-        let boneIndex = 0;
-
-        mapping.forEach(([startIdx, endIdx, segments]) => {
-            const start = data[startIdx];
-            const end = data[endIdx];
-
-            for (let i = 0; i < segments; i++) {
-                const t = (i + 1) / (segments + 1);
-                const interp = interpolateVector(start, end, t);
-
-                const dx = interp.x - start.x;
-                const dy = interp.y - start.y;
-                const dz = interp.z - start.z;
-
-                const bone = bones[boneIndex];
-                if (bone) {
-                    // Optional: convert to rotation angles using Math.atan2 if needed
-                    bone.rotation.x = dx;
-                    bone.rotation.y = dy;
-                    bone.rotation.z = dz;
-                }
-
-                boneIndex++;
-            }
-        });
-    }
-}
 
 mypeer.on('connection', conn => {
   console.log("Connected by peer:", conn.peer);
 
   conn.on('data', data => {
     console.log("Received hand data:", data);
-    updateHandBones(data)
+    //updateHandBones(data)
 
     // Example: do something with the data
     // visualizeHandData(data);
