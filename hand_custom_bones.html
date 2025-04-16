@@ -104,7 +104,7 @@
     Object.keys(controls).forEach(finger => {
         gui.add(controls, finger, -Math.PI / 2, Math.PI / 2).name(`${finger} curl`).onChange((value) => {
             fingerBones[finger].forEach(bone => {
-                bone.rotation.z = value;
+                bone.position.z = value;
                 console.log(bone)
             });
         });
