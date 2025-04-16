@@ -138,12 +138,7 @@ const mypeer = new Peer("TORRLABSPECIALSERVERHANDTRACKED");
 mypeer.on('open', id => {
   console.log("Connected with ID:", id);
 });
-     
-mypeer.on('connection', conn => {
-  console.log("Connected by peer:", conn.peer);
-
-  conn.on('data', data => {
-    console.log("Received hand data:", data);
+function anmate(data){
     let term = 1;
 for (const finger in fingerBones) {
     fingerBones[finger].forEach(bone => {
@@ -154,6 +149,13 @@ for (const finger in fingerBones) {
         term++;
     });
 }
+}
+mypeer.on('connection', conn => {
+  console.log("Connected by peer:", conn.peer);
+
+  conn.on('data', data => {
+    console.log("Received hand data:", data);
+    anmate(data)
 
     // Example: do something with the data
     // visualizeHandData(data);
