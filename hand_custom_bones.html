@@ -142,7 +142,8 @@ mypeer.on('open', id => {
 function animeit(data){
 let term = 1;
 let term2 = 0;
-for(const finger in fingerBones){
+for(const finge in fingerBones){
+let finger = fingerBones[finge]
 finger[0].position.x = data[term].x
 finger[0].position.y = data[term].y
 finger[0].position.z = data[term].z
