@@ -55,11 +55,11 @@
         let bones = {};
         let skeleton;
         const fingerBones = {
+    thumb: [],
     index: [],
     middle: [],
     ring: [],
-    pinky: [],
-    thumb: []
+    pinky: []
 };
 
         // Load FBX Model
@@ -145,43 +145,14 @@ mypeer.on('connection', conn => {
   conn.on('data', data => {
     console.log("Received hand data:", data);
     var term = 1
-   fingerBones['thumb'].forEach(bone=>{
+   fingerBones.forEach(xyz=>{xyz.forEach(bone=>{
        bone.rotation.x = data[term].x;
        bone.rotation.y = data[term].y;
        bone.rotation.z = data[term].z
        console.log(term)
        term++
-})
-   fingerBones['index'].forEach(bone=>{
-       bone.rotation.x = data[term].x;
-       bone.rotation.y = data[term].y;
-       bone.rotation.z = data[term].z
-       console.log(data[term])
-       console.log(data[term][x])
-       term++
-})
-   fingerBones['middle'].forEach(bone=>{
-       bone.rotation.x = data[term].x;
-       bone.rotation.y = data[term].y;
-       bone.rotation.z = data[term].z
-       console.log(term)
-       term++
-})
-
-    fingerBones['ring'].forEach(bone=>{
-       bone.rotation.x = data[term].x;
-       bone.rotation.y = data[term].y;
-       bone.rotation.z = data[term].z
-        console.log(term)
-       term++
-})
-    fingerBones['pinky'].forEach(bone=>{
-       bone.rotation.x = data[term].x;
-       bone.rotation.y = data[term].y;
-       bone.rotation.z = data[term].z
-        console.log(term)
-       term++
-})
+})})
+ 
     // Example: do something with the data
     // visualizeHandData(data);
   });
