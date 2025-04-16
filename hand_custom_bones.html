@@ -150,7 +150,7 @@ let angle2 = angleAtB(data[term+1], data[term+2], data[term+3])
 //finger[0].rotation.x = angle.x
 //finger[0].rotation.y = angle.y
 finger.forEach(bone => {
-                bone.rotation.z = normalize(angle, 90, 180);
+                bone.rotation.z = normalize(angle, 0, 90);
                 console.log(bone)
     });
 //finger[4].rotation.x = angle1.x
