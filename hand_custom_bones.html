@@ -139,7 +139,26 @@ const mypeer = new Peer("TORRLABSPECIALSERVERHANDTRACKED");
 mypeer.on('open', id => {
   console.log("Connected with ID:", id);
 });
-
+function animeit(data){
+let term = 1;
+let term2 = 0;
+for(const finger in fingerBones){
+finger[0].position.x = data[term].x
+finger[0].position.y = data[term].y
+finger[0].position.z = data[term].z
+finger[4].position.x = data[term+1].x
+finger[4].position.y = data[term+1].y
+finger[4].position.z = data[term+1].z
+finger[8].position.x = data[term+2].x
+finger[8].position.y = data[term+2].y
+finger[8].position.z = data[term+2].z
+finger[12].position.x = data[term+3].x
+finger[12].position.y = data[term+3].y
+finger[12].position.z = data[term+3].z
+term += 4;
+}
+    
+}
 
 mypeer.on('connection', conn => {
   console.log("Connected by peer:", conn.peer);
@@ -147,7 +166,7 @@ mypeer.on('connection', conn => {
   conn.on('data', data => {
     console.log("Received hand data:", data);
     //updateHandBones(data)
-
+animeit(data)
     // Example: do something with the data
     // visualizeHandData(data);
   });
